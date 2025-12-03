@@ -1,42 +1,73 @@
 import { prisma } from "@/db/client";
+import { verifyPassword } from "@/lib/hash";
 import { signToken } from "@/lib/jwt";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
+  try {
+    const body = await req.json().catch(() => null);
+
+    if (!body || !body.email || !body.password) {
+      return NextResponse.json(
+        { message: "Email and password are required" },
+        { status: 400 }
+      );
+    }
+
+    const { email, password } = body;
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { message: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    const valid = await verifyPassword(password, user.password);
+    if (!valid) {
+      return NextResponse.json(
+        { message: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    let token: string;
     try {
-        const body = await request.json();
-        const { name, email, password } = body;
-        if(!email || !password) {
-            return NextResponse.json({ message: 'Email and password are required.' }), { status: 400 };
-        }
-        
-        const user = await prisma.user.findUnique({ where: { email } });
-
-        if(!user) {
-            return NextResponse.json({ message: 'Invalid email or password.' }), { status: 401 };
-        }
-
-        const isValidPassword = password === user.password;
-        if(!isValidPassword) {
-            return NextResponse.json({ message: 'Invalid email or password.' }), { status: 401 };
-        }
-
-        const token = signToken({ userId: user.id, email: user.email });
-
-        (await cookies()).set({
-            name: 'auth_token',
-            value: token,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 7, // 7 days
-        });
-
-        return NextResponse.json({ message: 'Login successful.', user: { id: user.id, name: user.name, email: user.email } }), { status: 200 };
+    token = await signToken({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      });
+    } catch (jwtError) {
+      console.error("JWT generation error:", jwtError);
+      return NextResponse.json(
+        { message: "Error generating token" },
+        { status: 500 }
+      );
     }
-    catch (error) {
-        console.error('Error during login:', error);
-        return NextResponse.json({ message: 'Internal Server Error' }), { status: 500 };
-    }
+
+    (await cookies()).set("auth_token", token, {
+      httpOnly: true,
+      secure: false,
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60,
+    });
+
+    return NextResponse.json(
+      { message: "Login successful" },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    console.error("LOGIN CATCH ERROR:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
