@@ -1,14 +1,21 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Bot, Send, Volume2, VolumeX } from "lucide-react";
+import { Bot, Send, Volume2, VolumeX, AlertTriangle } from "lucide-react";
 
-// TYPES
 interface Message {
   id: string;
   text: string;
   sender: "user" | "ai";
   timestamp: Date;
+}
+
+interface KardiaAIResponse {
+  text: string;
+  risk: "low" | "medium" | "high";
+  factors: string;
+  recommendation: string;
+  alert?: string;
 }
 
 export default function KardiaAIPage() {
@@ -21,59 +28,69 @@ export default function KardiaAIPage() {
     },
   ]);
 
-  const [insights, setInsights] = useState<string[]>([
-    "Your insights will appear here as the conversation continues.",
-  ]);
+  const [insight, setInsight] = useState<KardiaAIResponse | null>(null);
 
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // SEND MESSAGE
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
 
-    const userMessage: Message = {
+    const userMsg: Message = {
       id: Date.now().toString(),
       text: inputMessage,
       sender: "user",
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    const msg = inputMessage;
+    setMessages((prev) => [...prev, userMsg]);
+
+    const sendText = inputMessage;
     setInputMessage("");
     setIsTyping(true);
 
     try {
-      const res = await fetch("/api/kardia-ai", {
+      const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: msg }),
+        body: JSON.stringify({ text: sendText }),
       });
 
-      const ai = await res.json();
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({
+          error: "Unknown API Error",
+          details: `HTTP Status: ${res.status}`,
+        }));
 
-      const aiMessage: Message = {
+        throw new Error(errorData.error || `Server error: ${res.status}`);
+      }
+
+      const ai: KardiaAIResponse = await res.json();
+
+      const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         text: ai.text,
         sender: "ai",
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
+      setMessages((prev) => [...prev, aiMsg]);
 
-      // UPDATE INSIGHTS
-      setInsights(ai.insights || ["No insights generated"]);
+      setInsight(ai);
     } catch (err) {
-      console.error(err);
+      console.error("AI error:", err);
+      const errorText =
+        err instanceof Error
+          ? err.message
+          : "Došlo je do neočekivane greške u obradi AI zahteva.";
+      alert(`Greška: ${errorText}`);
     } finally {
       setIsTyping(false);
     }
   };
 
-  // PLAY AUDIO
   const playAudio = async (text: string) => {
     if (isPlayingAudio) return;
 
@@ -85,6 +102,10 @@ export default function KardiaAIPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
+      
+      if (!res.ok) {
+        throw new Error(`Failed to generate audio. Status: ${res.status}`);
+      }
 
       const audioBlob = new Blob([await res.arrayBuffer()], {
         type: "audio/mpeg",
@@ -104,6 +125,7 @@ export default function KardiaAIPage() {
     } catch (error) {
       console.error("Audio error:", error);
       setIsPlayingAudio(false);
+      alert("Greška pri reprodukciji zvuka.");
     }
   };
 
@@ -115,10 +137,23 @@ export default function KardiaAIPage() {
     }
   };
 
+  const RiskBadge = ({ risk }: { risk: "low" | "medium" | "high" }) => {
+    const colors = {
+      low: "bg-green-100 text-green-700 border-green-300",
+      medium: "bg-yellow-100 text-yellow-700 border-yellow-300",
+      high: "bg-red-100 text-red-700 border-red-300",
+    };
+
+    return (
+      <span className={`px-3 py-1 rounded-full text-sm border ${colors[risk]}`}>
+        {risk.toUpperCase()} RISK
+      </span>
+    );
+  };
+
   return (
     <div className="p-8 min-h-screen bg-[#f5f7fa] flex gap-6">
 
-      {/* LEFT: CHAT */}
       <div className="flex flex-col bg-white rounded-xl shadow p-6 border w-2/3">
         <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
           <Bot className="w-5 h-5 text-blue-600" />
@@ -134,7 +169,7 @@ export default function KardiaAIPage() {
               }`}
             >
               {msg.sender === "ai" && (
-                <div className="w-8 h-8 flex items-center justify-center bg-blue-600 rounded-full text-white">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
@@ -150,7 +185,9 @@ export default function KardiaAIPage() {
 
                 {msg.sender === "ai" && (
                   <button
-                    className="mt-2 text-xs flex items-center gap-1 px-2 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    className={`mt-2 text-xs flex items-center gap-1 px-2 py-1 rounded ${
+                      isPlayingAudio ? 'bg-red-100 text-red-700 hover:bg-red-200' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    }`}
                     onClick={() =>
                       isPlayingAudio ? stopAudio() : playAudio(msg.text)
                     }
@@ -175,22 +212,21 @@ export default function KardiaAIPage() {
               <Bot className="w-5 h-5 text-blue-600" />
               <div className="bg-white px-3 py-2 rounded-lg shadow">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                   <div
                     className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                     style={{ animationDelay: "0.1s" }}
-                  ></div>
+                  />
                   <div
                     className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                     style={{ animationDelay: "0.2s" }}
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* INPUT */}
         <div className="mt-4 flex gap-2">
           <input
             className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -208,20 +244,40 @@ export default function KardiaAIPage() {
         </div>
       </div>
 
-      {/* RIGHT: INSIGHTS */}
       <div className="w-1/3 bg-white rounded-xl shadow p-6 border flex flex-col">
         <h2 className="text-xl font-semibold mb-4">Kardia Insights</h2>
 
-        <div className="flex-1 bg-gray-50 overflow-y-auto p-4 rounded-lg space-y-4">
-          {insights.map((insight, index) => (
-            <div
-              key={index}
-              className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-gray-800"
-            >
-              {insight}
+        {!insight ? (
+          <p className="text-gray-400 text-sm">
+            Ask something to see your heart-health insights here.
+          </p>
+        ) : (
+          <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+
+            <RiskBadge risk={insight.risk} />
+
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm">{insight.text}</p>
             </div>
-          ))}
-        </div>
+
+            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-xs font-semibold">Factors Influencing Risk:</p>
+              <p className="text-sm">{insight.factors}</p>
+            </div>
+
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-xs font-semibold">Recommended Action:</p>
+              <p className="text-sm">{insight.recommendation}</p>
+            </div>
+
+            {insight.alert && (
+              <div className="p-3 bg-red-50 border border-red-300 rounded-lg flex gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+                <p className="text-sm text-red-700">{insight.alert}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

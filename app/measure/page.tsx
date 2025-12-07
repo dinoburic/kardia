@@ -6,20 +6,33 @@ import { MeasurementResult } from "@/lib/types";
 
 export default function MeasurePage() {
   const [isMeasuring, setIsMeasuring] = useState(false);
-  const [result, setResult] = useState<MeasurementResult|null>(null);
+  const [result, setResult] = useState<MeasurementResult | null>(null);
+  const [error, setError] = useState(false);
 
   const measureNow = async () => {
     setIsMeasuring(true);
     setResult(null);
+    setError(false);
 
     await new Promise((res) => setTimeout(res, 4500));
 
-    const res = await fetch("/api/measurements/live", { method: "GET" });
-    const data:MeasurementResult = await res.json();
-
-    setResult(data);
-    setIsMeasuring(false);
+    try {
+      const res = await fetch("/api/measurements/live", { method: "GET" });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data: MeasurementResult = await res.json();
+      setResult(data);
+    } catch (e) {
+      setError(true);
+    } finally {
+      setIsMeasuring(false);
+    }
   };
+
+  const showNoDataMessage = !isMeasuring && !result && error;
 
   return (
     <div className="min-h-screen px-8 py-10 bg-[#f5f7fa] text-gray-700">
@@ -46,6 +59,12 @@ export default function MeasurePage() {
           </div>
         )}
       </div>
+
+      {showNoDataMessage && (
+        <div className="bg-red-100 p-4 rounded-lg shadow-md max-w-xl mx-auto text-center border border-red-300">
+            <p className="text-red-700 font-medium">Measurement failed: No data received after 5 seconds.</p>
+        </div>
+      )}
 
       {result && (
         <div className="bg-white p-6 rounded-2xl shadow-md max-w-xl mx-auto space-y-4">
