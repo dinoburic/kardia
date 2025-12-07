@@ -9,20 +9,57 @@ datasource db {
 
 
 model User {
-  id  Int @id @default(autoincrement())
-  name  String?
-  email String  @unique
+  id        Int           @id @default(autoincrement())
+  name      String?
+  email     String        @unique
   password  String
-  createdAt DateTime  @default(now())
+  createdAt DateTime      @default(now())
+
+  age       Int?          // opcionalno, može pomoći za interpretaciju
+  sex       String?       // "M" / "F" / itd, ako želiš
+
+  measurements Measurement[]
+  insights     AiInsight[]
+}
+
+enum HeartStatus {
+  OK
+  ELEVATED
+  WARNING
 }
 
 model Measurement {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  heartRate   Int
-  spo2        Int
-  temperature Float
-  movement    Float
-  source      String   @default("device")
+  id           Int         @id @default(autoincrement())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       Int
+
+  createdAt    DateTime    @default(now())
+  heartRate    Int         // BPM
+  spo2         Int         // %
+  temperature  Float       // °C (sobna ili blizu tijela)
+  motionLevel  Float       // 0.0 – 1.0 (0 = mirno, 1 = puno pokreta)
+
+  status       HeartStatus @default(OK) // evaluacija u trenutku mjerenja
+  score        Int         // 0–100 “heart health score” za to mjerenje
+
+  source       String      @default("device") // npr. "esp32"
+}
+
+model AiInsight {
+  id          Int         @id @default(autoincrement())
+  user        User        @relation(fields: [userId], references: [id])
+  userId      Int
+
+  createdAt   DateTime    @default(now())
+  date        DateTime    // za koji dan/period važi insight (npr. početak dana)
+  status      HeartStatus // opći status za taj dan (OK/ELEVATED/WARNING)
+  score       Int         // 0–100 score za dan
+
+  avgHeartRate  Float
+  maxHeartRate  Int
+  minHeartRate  Int
+  avgSpo2       Float
+
+  summaryText String      // tekst za KardiaAI panel
 }
 

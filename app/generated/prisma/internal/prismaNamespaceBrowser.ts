@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Measurement: 'Measurement'
+  Measurement: 'Measurement',
+  AiInsight: 'AiInsight'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -76,7 +77,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  age: 'age',
+  sex: 'sex'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -84,15 +87,35 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const MeasurementScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   createdAt: 'createdAt',
   heartRate: 'heartRate',
   spo2: 'spo2',
   temperature: 'temperature',
-  movement: 'movement',
+  motionLevel: 'motionLevel',
+  status: 'status',
+  score: 'score',
   source: 'source'
 } as const
 
 export type MeasurementScalarFieldEnum = (typeof MeasurementScalarFieldEnum)[keyof typeof MeasurementScalarFieldEnum]
+
+
+export const AiInsightScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  date: 'date',
+  status: 'status',
+  score: 'score',
+  avgHeartRate: 'avgHeartRate',
+  maxHeartRate: 'maxHeartRate',
+  minHeartRate: 'minHeartRate',
+  avgSpo2: 'avgSpo2',
+  summaryText: 'summaryText'
+} as const
+
+export type AiInsightScalarFieldEnum = (typeof AiInsightScalarFieldEnum)[keyof typeof AiInsightScalarFieldEnum]
 
 
 export const SortOrder = {

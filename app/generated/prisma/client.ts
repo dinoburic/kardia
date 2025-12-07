@@ -49,3 +49,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Measurement = Prisma.MeasurementModel
+/**
+ * Model AiInsight
+ * 
+ */
+export type AiInsight = Prisma.AiInsightModel

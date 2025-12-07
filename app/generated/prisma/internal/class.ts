@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.0.1",
   "engineVersion": "f09f2815f091dbba658cdcd2264306d88bb5bda6",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../app/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  name      String?\n  email     String   @unique\n  password  String\n  createdAt DateTime @default(now())\n}\n\nmodel Measurement {\n  id          Int      @id @default(autoincrement())\n  createdAt   DateTime @default(now())\n  heartRate   Int\n  spo2        Int\n  temperature Float\n  movement    Float\n  source      String   @default(\"device\")\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../app/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  name      String?\n  email     String   @unique\n  password  String\n  createdAt DateTime @default(now())\n\n  age Int? // opcionalno, može pomoći za interpretaciju\n  sex String? // \"M\" / \"F\" / itd, ako želiš\n\n  measurements Measurement[]\n  insights     AiInsight[]\n}\n\nenum HeartStatus {\n  OK\n  ELEVATED\n  WARNING\n}\n\nmodel Measurement {\n  id     Int  @id @default(autoincrement())\n  user   User @relation(fields: [userId], references: [id])\n  userId Int\n\n  createdAt   DateTime @default(now())\n  heartRate   Int // BPM\n  spo2        Int // %\n  temperature Float // °C (sobna ili blizu tijela)\n  motionLevel Float // 0.0 – 1.0 (0 = mirno, 1 = puno pokreta)\n\n  status HeartStatus @default(OK) // evaluacija u trenutku mjerenja\n  score  Int // 0–100 “heart health score” za to mjerenje\n\n  source String @default(\"device\") // npr. \"esp32\"\n}\n\nmodel AiInsight {\n  id     Int  @id @default(autoincrement())\n  user   User @relation(fields: [userId], references: [id])\n  userId Int\n\n  createdAt DateTime    @default(now())\n  date      DateTime // za koji dan/period važi insight (npr. početak dana)\n  status    HeartStatus // opći status za taj dan (OK/ELEVATED/WARNING)\n  score     Int // 0–100 score za dan\n\n  avgHeartRate Float\n  maxHeartRate Int\n  minHeartRate Int\n  avgSpo2      Float\n\n  summaryText String // tekst za KardiaAI panel\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Measurement\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"heartRate\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"spo2\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"temperature\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"movement\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"source\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"age\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"sex\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"measurements\",\"kind\":\"object\",\"type\":\"Measurement\",\"relationName\":\"MeasurementToUser\"},{\"name\":\"insights\",\"kind\":\"object\",\"type\":\"AiInsight\",\"relationName\":\"AiInsightToUser\"}],\"dbName\":null},\"Measurement\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MeasurementToUser\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"heartRate\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"spo2\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"temperature\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"motionLevel\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"HeartStatus\"},{\"name\":\"score\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"source\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"AiInsight\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AiInsightToUser\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"HeartStatus\"},{\"name\":\"score\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"avgHeartRate\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"maxHeartRate\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"minHeartRate\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"avgSpo2\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"summaryText\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -193,6 +193,16 @@ export interface PrismaClient<
     * ```
     */
   get measurement(): Prisma.MeasurementDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.aiInsight`: Exposes CRUD operations for the **AiInsight** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiInsights
+    * const aiInsights = await prisma.aiInsight.findMany()
+    * ```
+    */
+  get aiInsight(): Prisma.AiInsightDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

@@ -385,7 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Measurement: 'Measurement'
+  Measurement: 'Measurement',
+  AiInsight: 'AiInsight'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "measurement"
+    modelProps: "user" | "measurement" | "aiInsight"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +554,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AiInsight: {
+      payload: Prisma.$AiInsightPayload<ExtArgs>
+      fields: Prisma.AiInsightFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiInsightFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiInsightFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>
+        }
+        findFirst: {
+          args: Prisma.AiInsightFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiInsightFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>
+        }
+        findMany: {
+          args: Prisma.AiInsightFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>[]
+        }
+        create: {
+          args: Prisma.AiInsightCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>
+        }
+        createMany: {
+          args: Prisma.AiInsightCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiInsightCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>[]
+        }
+        delete: {
+          args: Prisma.AiInsightDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>
+        }
+        update: {
+          args: Prisma.AiInsightUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>
+        }
+        deleteMany: {
+          args: Prisma.AiInsightDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiInsightUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiInsightUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>[]
+        }
+        upsert: {
+          args: Prisma.AiInsightUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiInsightPayload>
+        }
+        aggregate: {
+          args: Prisma.AiInsightAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiInsight>
+        }
+        groupBy: {
+          args: Prisma.AiInsightGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiInsightGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiInsightCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiInsightCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -597,7 +672,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  age: 'age',
+  sex: 'sex'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -605,15 +682,35 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const MeasurementScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   createdAt: 'createdAt',
   heartRate: 'heartRate',
   spo2: 'spo2',
   temperature: 'temperature',
-  movement: 'movement',
+  motionLevel: 'motionLevel',
+  status: 'status',
+  score: 'score',
   source: 'source'
 } as const
 
 export type MeasurementScalarFieldEnum = (typeof MeasurementScalarFieldEnum)[keyof typeof MeasurementScalarFieldEnum]
+
+
+export const AiInsightScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  date: 'date',
+  status: 'status',
+  score: 'score',
+  avgHeartRate: 'avgHeartRate',
+  maxHeartRate: 'maxHeartRate',
+  minHeartRate: 'minHeartRate',
+  avgSpo2: 'avgSpo2',
+  summaryText: 'summaryText'
+} as const
+
+export type AiInsightScalarFieldEnum = (typeof AiInsightScalarFieldEnum)[keyof typeof AiInsightScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -701,6 +798,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'HeartStatus'
+ */
+export type EnumHeartStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HeartStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'HeartStatus[]'
+ */
+export type ListEnumHeartStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HeartStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -782,6 +893,7 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   measurement?: Prisma.MeasurementOmit
+  aiInsight?: Prisma.AiInsightOmit
 }
 
 /* Types for Logging */

@@ -28,47 +28,60 @@ export type AggregateMeasurement = {
 
 export type MeasurementAvgAggregateOutputType = {
   id: number | null
+  userId: number | null
   heartRate: number | null
   spo2: number | null
   temperature: number | null
-  movement: number | null
+  motionLevel: number | null
+  score: number | null
 }
 
 export type MeasurementSumAggregateOutputType = {
   id: number | null
+  userId: number | null
   heartRate: number | null
   spo2: number | null
   temperature: number | null
-  movement: number | null
+  motionLevel: number | null
+  score: number | null
 }
 
 export type MeasurementMinAggregateOutputType = {
   id: number | null
+  userId: number | null
   createdAt: Date | null
   heartRate: number | null
   spo2: number | null
   temperature: number | null
-  movement: number | null
+  motionLevel: number | null
+  status: $Enums.HeartStatus | null
+  score: number | null
   source: string | null
 }
 
 export type MeasurementMaxAggregateOutputType = {
   id: number | null
+  userId: number | null
   createdAt: Date | null
   heartRate: number | null
   spo2: number | null
   temperature: number | null
-  movement: number | null
+  motionLevel: number | null
+  status: $Enums.HeartStatus | null
+  score: number | null
   source: string | null
 }
 
 export type MeasurementCountAggregateOutputType = {
   id: number
+  userId: number
   createdAt: number
   heartRate: number
   spo2: number
   temperature: number
-  movement: number
+  motionLevel: number
+  status: number
+  score: number
   source: number
   _all: number
 }
@@ -76,47 +89,60 @@ export type MeasurementCountAggregateOutputType = {
 
 export type MeasurementAvgAggregateInputType = {
   id?: true
+  userId?: true
   heartRate?: true
   spo2?: true
   temperature?: true
-  movement?: true
+  motionLevel?: true
+  score?: true
 }
 
 export type MeasurementSumAggregateInputType = {
   id?: true
+  userId?: true
   heartRate?: true
   spo2?: true
   temperature?: true
-  movement?: true
+  motionLevel?: true
+  score?: true
 }
 
 export type MeasurementMinAggregateInputType = {
   id?: true
+  userId?: true
   createdAt?: true
   heartRate?: true
   spo2?: true
   temperature?: true
-  movement?: true
+  motionLevel?: true
+  status?: true
+  score?: true
   source?: true
 }
 
 export type MeasurementMaxAggregateInputType = {
   id?: true
+  userId?: true
   createdAt?: true
   heartRate?: true
   spo2?: true
   temperature?: true
-  movement?: true
+  motionLevel?: true
+  status?: true
+  score?: true
   source?: true
 }
 
 export type MeasurementCountAggregateInputType = {
   id?: true
+  userId?: true
   createdAt?: true
   heartRate?: true
   spo2?: true
   temperature?: true
-  movement?: true
+  motionLevel?: true
+  status?: true
+  score?: true
   source?: true
   _all?: true
 }
@@ -209,11 +235,14 @@ export type MeasurementGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type MeasurementGroupByOutputType = {
   id: number
+  userId: number
   createdAt: Date
   heartRate: number
   spo2: number
   temperature: number
-  movement: number
+  motionLevel: number
+  status: $Enums.HeartStatus
+  score: number
   source: string
   _count: MeasurementCountAggregateOutputType | null
   _avg: MeasurementAvgAggregateOutputType | null
@@ -242,22 +271,30 @@ export type MeasurementWhereInput = {
   OR?: Prisma.MeasurementWhereInput[]
   NOT?: Prisma.MeasurementWhereInput | Prisma.MeasurementWhereInput[]
   id?: Prisma.IntFilter<"Measurement"> | number
+  userId?: Prisma.IntFilter<"Measurement"> | number
   createdAt?: Prisma.DateTimeFilter<"Measurement"> | Date | string
   heartRate?: Prisma.IntFilter<"Measurement"> | number
   spo2?: Prisma.IntFilter<"Measurement"> | number
   temperature?: Prisma.FloatFilter<"Measurement"> | number
-  movement?: Prisma.FloatFilter<"Measurement"> | number
+  motionLevel?: Prisma.FloatFilter<"Measurement"> | number
+  status?: Prisma.EnumHeartStatusFilter<"Measurement"> | $Enums.HeartStatus
+  score?: Prisma.IntFilter<"Measurement"> | number
   source?: Prisma.StringFilter<"Measurement"> | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type MeasurementOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type MeasurementWhereUniqueInput = Prisma.AtLeast<{
@@ -265,21 +302,28 @@ export type MeasurementWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MeasurementWhereInput | Prisma.MeasurementWhereInput[]
   OR?: Prisma.MeasurementWhereInput[]
   NOT?: Prisma.MeasurementWhereInput | Prisma.MeasurementWhereInput[]
+  userId?: Prisma.IntFilter<"Measurement"> | number
   createdAt?: Prisma.DateTimeFilter<"Measurement"> | Date | string
   heartRate?: Prisma.IntFilter<"Measurement"> | number
   spo2?: Prisma.IntFilter<"Measurement"> | number
   temperature?: Prisma.FloatFilter<"Measurement"> | number
-  movement?: Prisma.FloatFilter<"Measurement"> | number
+  motionLevel?: Prisma.FloatFilter<"Measurement"> | number
+  status?: Prisma.EnumHeartStatusFilter<"Measurement"> | $Enums.HeartStatus
+  score?: Prisma.IntFilter<"Measurement"> | number
   source?: Prisma.StringFilter<"Measurement"> | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type MeasurementOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   source?: Prisma.SortOrder
   _count?: Prisma.MeasurementCountOrderByAggregateInput
   _avg?: Prisma.MeasurementAvgOrderByAggregateInput
@@ -293,11 +337,14 @@ export type MeasurementScalarWhereWithAggregatesInput = {
   OR?: Prisma.MeasurementScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MeasurementScalarWhereWithAggregatesInput | Prisma.MeasurementScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Measurement"> | number
+  userId?: Prisma.IntWithAggregatesFilter<"Measurement"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Measurement"> | Date | string
   heartRate?: Prisma.IntWithAggregatesFilter<"Measurement"> | number
   spo2?: Prisma.IntWithAggregatesFilter<"Measurement"> | number
   temperature?: Prisma.FloatWithAggregatesFilter<"Measurement"> | number
-  movement?: Prisma.FloatWithAggregatesFilter<"Measurement"> | number
+  motionLevel?: Prisma.FloatWithAggregatesFilter<"Measurement"> | number
+  status?: Prisma.EnumHeartStatusWithAggregatesFilter<"Measurement"> | $Enums.HeartStatus
+  score?: Prisma.IntWithAggregatesFilter<"Measurement"> | number
   source?: Prisma.StringWithAggregatesFilter<"Measurement"> | string
 }
 
@@ -306,17 +353,23 @@ export type MeasurementCreateInput = {
   heartRate: number
   spo2: number
   temperature: number
-  movement: number
+  motionLevel: number
+  status?: $Enums.HeartStatus
+  score: number
   source?: string
+  user: Prisma.UserCreateNestedOneWithoutMeasurementsInput
 }
 
 export type MeasurementUncheckedCreateInput = {
   id?: number
+  userId: number
   createdAt?: Date | string
   heartRate: number
   spo2: number
   temperature: number
-  movement: number
+  motionLevel: number
+  status?: $Enums.HeartStatus
+  score: number
   source?: string
 }
 
@@ -325,27 +378,36 @@ export type MeasurementUpdateInput = {
   heartRate?: Prisma.IntFieldUpdateOperationsInput | number
   spo2?: Prisma.IntFieldUpdateOperationsInput | number
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
-  movement?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMeasurementsNestedInput
 }
 
 export type MeasurementUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   heartRate?: Prisma.IntFieldUpdateOperationsInput | number
   spo2?: Prisma.IntFieldUpdateOperationsInput | number
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
-  movement?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type MeasurementCreateManyInput = {
   id?: number
+  userId: number
   createdAt?: Date | string
   heartRate: number
   spo2: number
   temperature: number
-  movement: number
+  motionLevel: number
+  status?: $Enums.HeartStatus
+  score: number
   source?: string
 }
 
@@ -354,64 +416,134 @@ export type MeasurementUpdateManyMutationInput = {
   heartRate?: Prisma.IntFieldUpdateOperationsInput | number
   spo2?: Prisma.IntFieldUpdateOperationsInput | number
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
-  movement?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type MeasurementUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   heartRate?: Prisma.IntFieldUpdateOperationsInput | number
   spo2?: Prisma.IntFieldUpdateOperationsInput | number
   temperature?: Prisma.FloatFieldUpdateOperationsInput | number
-  movement?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   source?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type MeasurementListRelationFilter = {
+  every?: Prisma.MeasurementWhereInput
+  some?: Prisma.MeasurementWhereInput
+  none?: Prisma.MeasurementWhereInput
+}
+
+export type MeasurementOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type MeasurementCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   source?: Prisma.SortOrder
 }
 
 export type MeasurementAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  score?: Prisma.SortOrder
 }
 
 export type MeasurementMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   source?: Prisma.SortOrder
 }
 
 export type MeasurementMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   source?: Prisma.SortOrder
 }
 
 export type MeasurementSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   heartRate?: Prisma.SortOrder
   spo2?: Prisma.SortOrder
   temperature?: Prisma.SortOrder
-  movement?: Prisma.SortOrder
+  motionLevel?: Prisma.SortOrder
+  score?: Prisma.SortOrder
+}
+
+export type MeasurementCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.MeasurementCreateWithoutUserInput, Prisma.MeasurementUncheckedCreateWithoutUserInput> | Prisma.MeasurementCreateWithoutUserInput[] | Prisma.MeasurementUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.MeasurementCreateOrConnectWithoutUserInput | Prisma.MeasurementCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.MeasurementCreateManyUserInputEnvelope
+  connect?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+}
+
+export type MeasurementUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.MeasurementCreateWithoutUserInput, Prisma.MeasurementUncheckedCreateWithoutUserInput> | Prisma.MeasurementCreateWithoutUserInput[] | Prisma.MeasurementUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.MeasurementCreateOrConnectWithoutUserInput | Prisma.MeasurementCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.MeasurementCreateManyUserInputEnvelope
+  connect?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+}
+
+export type MeasurementUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.MeasurementCreateWithoutUserInput, Prisma.MeasurementUncheckedCreateWithoutUserInput> | Prisma.MeasurementCreateWithoutUserInput[] | Prisma.MeasurementUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.MeasurementCreateOrConnectWithoutUserInput | Prisma.MeasurementCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.MeasurementUpsertWithWhereUniqueWithoutUserInput | Prisma.MeasurementUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.MeasurementCreateManyUserInputEnvelope
+  set?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  disconnect?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  delete?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  connect?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  update?: Prisma.MeasurementUpdateWithWhereUniqueWithoutUserInput | Prisma.MeasurementUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.MeasurementUpdateManyWithWhereWithoutUserInput | Prisma.MeasurementUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.MeasurementScalarWhereInput | Prisma.MeasurementScalarWhereInput[]
+}
+
+export type MeasurementUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.MeasurementCreateWithoutUserInput, Prisma.MeasurementUncheckedCreateWithoutUserInput> | Prisma.MeasurementCreateWithoutUserInput[] | Prisma.MeasurementUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.MeasurementCreateOrConnectWithoutUserInput | Prisma.MeasurementCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.MeasurementUpsertWithWhereUniqueWithoutUserInput | Prisma.MeasurementUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.MeasurementCreateManyUserInputEnvelope
+  set?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  disconnect?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  delete?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  connect?: Prisma.MeasurementWhereUniqueInput | Prisma.MeasurementWhereUniqueInput[]
+  update?: Prisma.MeasurementUpdateWithWhereUniqueWithoutUserInput | Prisma.MeasurementUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.MeasurementUpdateManyWithWhereWithoutUserInput | Prisma.MeasurementUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.MeasurementScalarWhereInput | Prisma.MeasurementScalarWhereInput[]
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -422,60 +554,205 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumHeartStatusFieldUpdateOperationsInput = {
+  set?: $Enums.HeartStatus
+}
+
+export type MeasurementCreateWithoutUserInput = {
+  createdAt?: Date | string
+  heartRate: number
+  spo2: number
+  temperature: number
+  motionLevel: number
+  status?: $Enums.HeartStatus
+  score: number
+  source?: string
+}
+
+export type MeasurementUncheckedCreateWithoutUserInput = {
+  id?: number
+  createdAt?: Date | string
+  heartRate: number
+  spo2: number
+  temperature: number
+  motionLevel: number
+  status?: $Enums.HeartStatus
+  score: number
+  source?: string
+}
+
+export type MeasurementCreateOrConnectWithoutUserInput = {
+  where: Prisma.MeasurementWhereUniqueInput
+  create: Prisma.XOR<Prisma.MeasurementCreateWithoutUserInput, Prisma.MeasurementUncheckedCreateWithoutUserInput>
+}
+
+export type MeasurementCreateManyUserInputEnvelope = {
+  data: Prisma.MeasurementCreateManyUserInput | Prisma.MeasurementCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type MeasurementUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.MeasurementWhereUniqueInput
+  update: Prisma.XOR<Prisma.MeasurementUpdateWithoutUserInput, Prisma.MeasurementUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.MeasurementCreateWithoutUserInput, Prisma.MeasurementUncheckedCreateWithoutUserInput>
+}
+
+export type MeasurementUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.MeasurementWhereUniqueInput
+  data: Prisma.XOR<Prisma.MeasurementUpdateWithoutUserInput, Prisma.MeasurementUncheckedUpdateWithoutUserInput>
+}
+
+export type MeasurementUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.MeasurementScalarWhereInput
+  data: Prisma.XOR<Prisma.MeasurementUpdateManyMutationInput, Prisma.MeasurementUncheckedUpdateManyWithoutUserInput>
+}
+
+export type MeasurementScalarWhereInput = {
+  AND?: Prisma.MeasurementScalarWhereInput | Prisma.MeasurementScalarWhereInput[]
+  OR?: Prisma.MeasurementScalarWhereInput[]
+  NOT?: Prisma.MeasurementScalarWhereInput | Prisma.MeasurementScalarWhereInput[]
+  id?: Prisma.IntFilter<"Measurement"> | number
+  userId?: Prisma.IntFilter<"Measurement"> | number
+  createdAt?: Prisma.DateTimeFilter<"Measurement"> | Date | string
+  heartRate?: Prisma.IntFilter<"Measurement"> | number
+  spo2?: Prisma.IntFilter<"Measurement"> | number
+  temperature?: Prisma.FloatFilter<"Measurement"> | number
+  motionLevel?: Prisma.FloatFilter<"Measurement"> | number
+  status?: Prisma.EnumHeartStatusFilter<"Measurement"> | $Enums.HeartStatus
+  score?: Prisma.IntFilter<"Measurement"> | number
+  source?: Prisma.StringFilter<"Measurement"> | string
+}
+
+export type MeasurementCreateManyUserInput = {
+  id?: number
+  createdAt?: Date | string
+  heartRate: number
+  spo2: number
+  temperature: number
+  motionLevel: number
+  status?: $Enums.HeartStatus
+  score: number
+  source?: string
+}
+
+export type MeasurementUpdateWithoutUserInput = {
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  heartRate?: Prisma.IntFieldUpdateOperationsInput | number
+  spo2?: Prisma.IntFieldUpdateOperationsInput | number
+  temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type MeasurementUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  heartRate?: Prisma.IntFieldUpdateOperationsInput | number
+  spo2?: Prisma.IntFieldUpdateOperationsInput | number
+  temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type MeasurementUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  heartRate?: Prisma.IntFieldUpdateOperationsInput | number
+  spo2?: Prisma.IntFieldUpdateOperationsInput | number
+  temperature?: Prisma.FloatFieldUpdateOperationsInput | number
+  motionLevel?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumHeartStatusFieldUpdateOperationsInput | $Enums.HeartStatus
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 
 
 export type MeasurementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  userId?: boolean
   createdAt?: boolean
   heartRate?: boolean
   spo2?: boolean
   temperature?: boolean
-  movement?: boolean
+  motionLevel?: boolean
+  status?: boolean
+  score?: boolean
   source?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["measurement"]>
 
 export type MeasurementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  userId?: boolean
   createdAt?: boolean
   heartRate?: boolean
   spo2?: boolean
   temperature?: boolean
-  movement?: boolean
+  motionLevel?: boolean
+  status?: boolean
+  score?: boolean
   source?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["measurement"]>
 
 export type MeasurementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  userId?: boolean
   createdAt?: boolean
   heartRate?: boolean
   spo2?: boolean
   temperature?: boolean
-  movement?: boolean
+  motionLevel?: boolean
+  status?: boolean
+  score?: boolean
   source?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["measurement"]>
 
 export type MeasurementSelectScalar = {
   id?: boolean
+  userId?: boolean
   createdAt?: boolean
   heartRate?: boolean
   spo2?: boolean
   temperature?: boolean
-  movement?: boolean
+  motionLevel?: boolean
+  status?: boolean
+  score?: boolean
   source?: boolean
 }
 
-export type MeasurementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "heartRate" | "spo2" | "temperature" | "movement" | "source", ExtArgs["result"]["measurement"]>
+export type MeasurementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "createdAt" | "heartRate" | "spo2" | "temperature" | "motionLevel" | "status" | "score" | "source", ExtArgs["result"]["measurement"]>
+export type MeasurementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type MeasurementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type MeasurementIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
 
 export type $MeasurementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Measurement"
-  objects: {}
+  objects: {
+    user: Prisma.$UserPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
+    userId: number
     createdAt: Date
     heartRate: number
     spo2: number
     temperature: number
-    movement: number
+    motionLevel: number
+    status: $Enums.HeartStatus
+    score: number
     source: string
   }, ExtArgs["result"]["measurement"]>
   composites: {}
@@ -871,6 +1148,7 @@ readonly fields: MeasurementFieldRefs;
  */
 export interface Prisma__MeasurementClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -901,11 +1179,14 @@ export interface Prisma__MeasurementClient<T, Null = never, ExtArgs extends runt
  */
 export interface MeasurementFieldRefs {
   readonly id: Prisma.FieldRef<"Measurement", 'Int'>
+  readonly userId: Prisma.FieldRef<"Measurement", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Measurement", 'DateTime'>
   readonly heartRate: Prisma.FieldRef<"Measurement", 'Int'>
   readonly spo2: Prisma.FieldRef<"Measurement", 'Int'>
   readonly temperature: Prisma.FieldRef<"Measurement", 'Float'>
-  readonly movement: Prisma.FieldRef<"Measurement", 'Float'>
+  readonly motionLevel: Prisma.FieldRef<"Measurement", 'Float'>
+  readonly status: Prisma.FieldRef<"Measurement", 'HeartStatus'>
+  readonly score: Prisma.FieldRef<"Measurement", 'Int'>
   readonly source: Prisma.FieldRef<"Measurement", 'String'>
 }
     
@@ -923,6 +1204,10 @@ export type MeasurementFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the Measurement
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
   /**
    * Filter, which Measurement to fetch.
    */
@@ -942,6 +1227,10 @@ export type MeasurementFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
+  /**
    * Filter, which Measurement to fetch.
    */
   where: Prisma.MeasurementWhereUniqueInput
@@ -959,6 +1248,10 @@ export type MeasurementFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the Measurement
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
   /**
    * Filter, which Measurement to fetch.
    */
@@ -1008,6 +1301,10 @@ export type MeasurementFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
+  /**
    * Filter, which Measurement to fetch.
    */
   where?: Prisma.MeasurementWhereInput
@@ -1056,6 +1353,10 @@ export type MeasurementFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
+  /**
    * Filter, which Measurements to fetch.
    */
   where?: Prisma.MeasurementWhereInput
@@ -1099,6 +1400,10 @@ export type MeasurementCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
+  /**
    * The data needed to create a Measurement.
    */
   data: Prisma.XOR<Prisma.MeasurementCreateInput, Prisma.MeasurementUncheckedCreateInput>
@@ -1132,6 +1437,10 @@ export type MeasurementCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.MeasurementCreateManyInput | Prisma.MeasurementCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1146,6 +1455,10 @@ export type MeasurementUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Measurement
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
   /**
    * The data needed to update a Measurement.
    */
@@ -1198,6 +1511,10 @@ export type MeasurementUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many Measurements to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1212,6 +1529,10 @@ export type MeasurementUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Measurement
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
   /**
    * The filter to search for the Measurement to update in case it exists.
    */
@@ -1238,6 +1559,10 @@ export type MeasurementDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Measurement
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
   /**
    * Filter which Measurement to delete.
    */
@@ -1270,4 +1595,8 @@ export type MeasurementDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Measurement
    */
   omit?: Prisma.MeasurementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeasurementInclude<ExtArgs> | null
 }
