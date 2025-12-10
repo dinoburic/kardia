@@ -32,3 +32,8 @@ export type Measurement = Prisma.MeasurementModel
  * 
  */
 export type AiInsight = Prisma.AiInsightModel
+/**
+ * Model MeasurementStatus
+ * 
+ */
+export type MeasurementStatus = Prisma.MeasurementStatusModel

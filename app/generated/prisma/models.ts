@@ -11,4 +11,5 @@
 export type * from './models/User'
 export type * from './models/Measurement'
 export type * from './models/AiInsight'
+export type * from './models/MeasurementStatus'
 export type * from './commonInputTypes'

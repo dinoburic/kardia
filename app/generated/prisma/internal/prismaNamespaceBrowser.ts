@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Measurement: 'Measurement',
-  AiInsight: 'AiInsight'
+  AiInsight: 'AiInsight',
+  MeasurementStatus: 'MeasurementStatus'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -116,6 +117,14 @@ export const AiInsightScalarFieldEnum = {
 } as const
 
 export type AiInsightScalarFieldEnum = (typeof AiInsightScalarFieldEnum)[keyof typeof AiInsightScalarFieldEnum]
+
+
+export const MeasurementStatusScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive'
+} as const
+
+export type MeasurementStatusScalarFieldEnum = (typeof MeasurementStatusScalarFieldEnum)[keyof typeof MeasurementStatusScalarFieldEnum]
 
 
 export const SortOrder = {
