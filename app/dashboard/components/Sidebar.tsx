@@ -8,11 +8,11 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: "📊" },
-    { name: "Measure", href: "/measure", icon: "❤️" },
-    { name: "Analytics", href: "/analytics", icon: "📈" },
-    { name: "KardiaAI", href: "/ai", icon: "🤖" },
-    { name: "About", href: "/about", icon: "⚙️" },
+    { name: "Dashboard", href: "/dashboard" },
+    { name: "Measure", href: "/measure"},
+    { name: "Analytics", href: "/analytics" },
+    { name: "KardiaAI", href: "/ai"},
+    { name: "About", href: "/about"},
   ];
 
   return (
@@ -40,7 +40,7 @@ export default function Sidebar() {
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
             >
-              <span className="text-xl">{item.icon}</span>
+              {/* <span className="text-xl">{item.icon}</span> */}
               {item.name}
             </Link>
           );
