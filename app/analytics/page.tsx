@@ -19,7 +19,7 @@ type Measurement = {
   createdAt: string;
   heartRate: number;
   spo2: number;
-  temperature: number; // This value is now correctly assumed to be Room Temperature
+  temperature: number; 
   motionLevel: number;
   status?: string;
   score?: number;
@@ -31,7 +31,7 @@ interface MetricSummary {
   max: number | null;
 }
 
-// Generic Chart Component (kept the same)
+
 function MetricLineChart({
   title,
   color,
@@ -100,7 +100,6 @@ export default function AnalyticsPage() {
   const [aiInsight, setAiInsight] = useState<string | null>(null);
   const [loadingInsight, setLoadingInsight] = useState(false);
 
-  // --- DATA LOADING useEffect ---
   useEffect(() => {
     async function load() {
       try {
@@ -127,7 +126,6 @@ export default function AnalyticsPage() {
     load();
   }, []);
 
-  // --- AI INSIGHT GENERATION useEffect ---
   useEffect(() => {
     if (!loading && measurements.length > 0) {
       setLoadingInsight(true);
@@ -140,8 +138,6 @@ export default function AnalyticsPage() {
             headers: {
               "Content-Type": "application/json",
             },
-            // We still send the raw data, but the backend AI prompt should be adjusted
-            // to treat 'temperature' as 'room temperature'.
             body: JSON.stringify({ measurements }),
           });
 
@@ -173,8 +169,6 @@ export default function AnalyticsPage() {
     }
   }, [loading, measurements]);
 
-
-  // --- Data preparation (kept the same) ---
   const labels = useMemo(
     () =>
       measurements.map((m) =>
@@ -204,7 +198,6 @@ export default function AnalyticsPage() {
   const tempSummary = useMemo(() => makeSummary(tempValues), [tempValues]);
   const motionSummary = useMemo(() => makeSummary(motionValues), [motionValues]);
 
-  // Use AI insight or a loading/placeholder message
   const displayInsight = loadingInsight 
     ? "Generating AI Insight..." 
     : aiInsight || "No insight available.";
@@ -227,25 +220,22 @@ export default function AnalyticsPage() {
         </div>
       ) : (
         <>
-          {/* TOP SUMMARY CARDS */}
           <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <SummaryCard title="Avg BPM" value={heartSummary.avg} unit="bpm" healthyRange="60–90" />
             <SummaryCard title="Avg SpO₂" value={spo2Summary.avg} unit="%" healthyRange="96–100" />
-            {/* CORRECTED TITLE and HealthyRange for Room Temperature */}
+        
             <SummaryCard title="Avg Room Temp" value={tempSummary.avg} unit="°C" healthyRange="20–24" /> 
             <SummaryCard title="Avg Motion" value={motionSummary.avg} unit="%" healthyRange="20–60" />
           </section>
 
-          {/* CHARTS */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <MetricLineChart title="Heart Rate" color="#ef4444" labels={labels} values={heartValues} unit="bpm" />
             <MetricLineChart title="SpO₂" color="#3b82f6" labels={labels} values={spo2Values} unit="%" />
-            {/* CORRECTED CHART TITLE */}
+          
             <MetricLineChart title="Room Temperature" color="#f97316" labels={labels} values={tempValues} unit="°C" />
             <MetricLineChart title="Motion Level" color="#8b5cf6" labels={labels} values={motionValues} unit="%" />
           </section>
 
-          {/* AI INSIGHT */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-2xl shadow p-6 lg:col-span-2">
               <h2 className="text-lg font-semibold text-gray-800 mb-2">
@@ -275,7 +265,6 @@ export default function AnalyticsPage() {
   );
 }
 
-// SummaryCard component (kept the same)
 function SummaryCard({
   title,
   value,

@@ -1,4 +1,4 @@
-// app/api/insights/today/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/db/client";
 

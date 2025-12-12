@@ -14,9 +14,8 @@ export default function MeasurePage() {
     setResult(null);
     setError(false);
     
-    // Korak 1: Šaljemo komandu serveru da aktivira status mjerenja (true)
     try {
-        const commandRes = await fetch("/api/command/measure", { method: "GET" }); // Koristite GET ili POST
+        const commandRes = await fetch("/api/command/measure", { method: "GET" }); 
         
         if (!commandRes.ok) {
             throw new Error(`Command failed! Status: ${commandRes.status}`);
@@ -25,39 +24,33 @@ export default function MeasurePage() {
         console.error("Failed to send command to ESP32 trigger route.", e);
         setError(true);
         setIsMeasuring(false);
-        return; // Prekini ako komanda ne uspije
+        return; 
     }
     
-    // Bilježimo vrijeme kad je mjerenje počelo
     const startTime = new Date();
     
-    // Korak 2: Čekamo (polling) da se novo mjerenje pojavi u bazi
-    const MAX_POLLING_TIME_MS = 30000; // Npr. Maksimalno 30 sekundi čekanja
+    const MAX_POLLING_TIME_MS = 30000; 
     let measurementFound = false;
 
     while (new Date().getTime() - startTime.getTime() < MAX_POLLING_TIME_MS) {
-        // Čekaj kratko prije provjere
-        await new Promise((res) => setTimeout(res, 2000)); // Polling svakih 2 sekunde
+     
+        await new Promise((res) => setTimeout(res, 2000)); 
 
         try {
-            // Dohvati najnovije mjerenje iz baze
-            // Ako /api/measurements/live koristi GET da dohvati najnovije
             const res = await fetch("/api/measurements/live", { method: "GET" });
             
             if (res.ok) {
                 const data: MeasurementResult = await res.json();
                 
-                // Provjera: Je li ovo mjerenje novije od vremena okidanja?
-                const measurementTime = new Date(data.createdAt); // Pretpostavka da imate createdAt polje
+                const measurementTime = new Date(data.createdAt); 
                 
                 if (measurementTime.getTime() > startTime.getTime()) {
                     setResult(data);
                     measurementFound = true;
-                    break; // Mjerenje je stiglo, izlazimo iz petlje
+                    break; 
                 }
             }
         } catch (e) {
-            // Logiramo grešku, ali nastavljamo s pollingom
             console.warn("Polling failed, retrying...", e);
         }
     }
@@ -67,7 +60,6 @@ export default function MeasurePage() {
         console.error("Measurement timed out. No new data received from ESP32.");
     }
 
-    // Korak 3: Završi
     setIsMeasuring(false);
 };
 

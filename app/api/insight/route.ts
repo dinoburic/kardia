@@ -1,19 +1,15 @@
 import { NextResponse } from 'next/server';
 
-// Use standard fetch if available, or install a lightweight library like 'axios' if running on old Node environments.
-// We will use the native fetch, which is available in modern Next.js environments.
 
-// Configuration
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-// Define the expected structure for the input body
 interface Measurement {
   id: number;
   createdAt: string;
   heartRate: number;
   spo2: number;
-  temperature: number; // Room Temperature in °C
+  temperature: number; 
   motionLevel: number;
   status?: string;
   score?: number;
@@ -23,10 +19,7 @@ interface RequestBody {
     measurements: Measurement[];
 }
 
-/**
- * Route Handler for POST requests to /api/insight
- * Analyzes health and environmental data using a Groq model.
- */
+
 export async function POST(request: Request) {
   if (!GROQ_API_KEY) {
     return NextResponse.json(
@@ -36,7 +29,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    // 1. Parse the request body (must use request.json() in Next.js Route Handlers)
     const { measurements }: RequestBody = await request.json();
 
     if (!measurements || measurements.length === 0) {
@@ -46,7 +38,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // --- 2. Construct the Detailed Prompt ---
     const dataForAI = JSON.stringify(measurements, null, 2);
 
     const systemPrompt = `
@@ -75,7 +66,6 @@ export async function POST(request: Request) {
       --- END OF DATA ---
     `;
     
-    // --- 3. Call the Groq API ---
     const groqResponse = await fetch(GROQ_API_URL, {
       method: 'POST',
       headers: {
@@ -103,15 +93,12 @@ export async function POST(request: Request) {
 
     const groqJson = await groqResponse.json();
     
-    // Extract the content from the response
     const insightText = groqJson.choices[0].message.content.trim();
 
-    // --- 4. Send Response to Frontend (Success) ---
     return NextResponse.json({ insight: insightText });
 
   } catch (error) {
     console.error("AI Insight Generation Error:", error);
-    // Return a generic error response
     return NextResponse.json(
       { error: "Internal Server Error during AI analysis." },
       { status: 500 }

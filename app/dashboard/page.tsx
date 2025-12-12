@@ -7,10 +7,10 @@ type Measurement = {
     id: number;
     userId: number;
     createdAt: string;
-    heartRate: number; // BPM
-    spo2: number;       // %
-    temperature: number; // Room Temperature in °C
-    motionLevel: number; // %
+    heartRate: number; 
+    spo2: number;      
+    temperature: number; 
+    motionLevel: number; 
     status: string;
     score: number;
     source: string;
@@ -23,7 +23,6 @@ interface DailySummary {
     avgMotionLevel: number | string;
 }
 
-// Helper function to calculate average of a list of numbers
 const calculateAverage = (values: number[]): number | string => {
     if (values.length === 0) return "-";
     const sum = values.reduce((a, b) => a + b, 0);
@@ -34,13 +33,11 @@ export default function Dashboard() {
     const [measurements, setMeasurements] = useState<Measurement[]>([]);
     const [selectedDay, setSelectedDay] = useState(new Date());
     
-    // Initial data load
     useEffect(() => {
         async function load() {
             try {
                 const res = await fetch("/api/measurements");
                 const data: Measurement[] = await res.json();
-                // Sort by time descending to easily get 'latest' reading
                 const sortedData = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setMeasurements(sortedData);
             } catch (error) {
@@ -50,13 +47,11 @@ export default function Dashboard() {
         load();
     }, []);
 
-    // --- Data Grouping ---
     const groupByDay = useMemo(() => {
         const map = new Map<string, Measurement[]>();
 
         measurements.forEach((m) => {
             const d = new Date(m.createdAt);
-            // Key format: YYYY-MM-DD
             const key = d.toISOString().split("T")[0]; 
 
             if (!map.has(key)) map.set(key, []);
@@ -66,11 +61,9 @@ export default function Dashboard() {
         return map;
     }, [measurements]);
     
-    // --- Daily Data Filtering (KEY CHANGE) ---
     const selectedKey = selectedDay.toISOString().split("T")[0];
     const selectedMeasurements = groupByDay.get(selectedKey) ?? [];
 
-    // --- Daily Metric Calculation (useMemo for performance) ---
     const dailyBpmValues = selectedMeasurements.map((m) => m.heartRate);
     const dailySpo2Values = selectedMeasurements.map((m) => m.spo2);
     const dailyTempValues = selectedMeasurements.map((m) => m.temperature);
@@ -88,8 +81,6 @@ export default function Dashboard() {
     const highestBpm = dailyBpmValues.length ? Math.max(...dailyBpmValues) : "-";
     const lowestBpm = dailyBpmValues.length ? Math.min(...dailyBpmValues) : "-";
     
-    // --- Weekly Navigation and Summary Logic (Unchanged but included for context) ---
-
     const getMonday = (d: Date) => {
         const date = new Date(d);
         const day = date.getDay();
@@ -128,9 +119,8 @@ export default function Dashboard() {
 
     const weeklyMeasurements = measurements.filter((m) => {
         const d = new Date(m.createdAt);
-        // Compare dates without time part for proper week filtering
         const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 7); // Set to next week's start
+        weekEnd.setDate(weekStart.getDate() + 7); 
         return d >= weekStart && d < weekEnd;
     });
 
@@ -158,7 +148,6 @@ export default function Dashboard() {
             ? (((weekAvg - lastWeekAvg) / lastWeekAvg) * 100).toFixed(1)
             : "0";
 
-    // --- AI Insight based on selected day's average data (KEY CHANGE) ---
     const aiInsight = useMemo(() => {
         if (selectedMeasurements.length === 0) return "No data recorded for the selected day. Please select a different date.";
 
@@ -181,13 +170,11 @@ export default function Dashboard() {
         return "Your vitals look stable for the selected day. Keep a balanced routine.";
     }, [selectedMeasurements.length, daySummary]);
 
-    // --- Component Rendering ---
     return (
         <div className="min-h-screen bg-[#f5f7fa] p-8 text-gray-700">
             <header className="flex justify-between items-center mb-10">
                 <h1 className="text-4xl font-semibold">Dashboard</h1>
 
-                {/* DISPLAY KEY DAILY AVERAGES (Filtered by selectedDay) */}
                 <div className="flex gap-8 text-lg">
                     <div className="flex flex-col items-center">
                         <p className="text-gray-500 text-sm">Avg BPM (Daily)</p>
@@ -216,7 +203,6 @@ export default function Dashboard() {
             <div className="bg-white p-6 rounded-2xl shadow mb-10">
                 <h2 className="text-xl font-semibold mb-4">Stress Patterns Overview</h2>
 
-                {/* WEEK NAVIGATION */}
                 <div className="flex justify-between items-center mb-4">
                     <button
                         onClick={prevWeek}
@@ -240,11 +226,10 @@ export default function Dashboard() {
                     </button>
                 </div>
 
-                {/* WEEK DAYS PICKER */}
                 <div className="flex gap-5 justify-between">
                     {weekDays.map((date) => {
                         const isSelected = isSameDay(date, selectedDay);
-                        // Check if any data exists for the day to add a visual indicator
+        
                         const hasData = groupByDay.has(date.toISOString().split("T")[0]);
 
                         return (
@@ -274,7 +259,6 @@ export default function Dashboard() {
                 </div>
 
                 <div className="flex mt-10 gap-10">
-                    {/* Stress Level Gauge (Still uses weekAvg, which is correct) */}
                     <div className="relative w-40 h-40">
                         <svg className="absolute inset-0" viewBox="0 0 100 100">
                             <circle
@@ -285,7 +269,6 @@ export default function Dashboard() {
                                 strokeWidth="10"
                                 fill="none"
                             />
-                            {/* Assuming a max heart rate of 150 BPM for gauge visualization */}
                             <circle
                                 cx="50"
                                 cy="50"
@@ -335,7 +318,6 @@ export default function Dashboard() {
                 </p>
 
                 <div className="grid grid-cols-2 gap-6">
-                    {/* CHART IS NOW FILTERED BY selectedMeasurements */}
                     <HeartRateChart dataPoints={dailyBpmValues} /> 
 
                     <div className="flex flex-col gap-3 text-sm">
@@ -374,6 +356,3 @@ export default function Dashboard() {
         </div>
     );
 }
-
-// Note: The HeartRateChart component is imported but its internal implementation
-// is assumed to correctly handle the 'dataPoints' array (dailyBpmValues).

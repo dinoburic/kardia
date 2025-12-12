@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/db/client";
 
-export async function GET() { // Frontend poziva ovu rutu (GET)
+export async function GET() { 
     try {
-        // Postavi status mjerenja na aktivno u bazi
         await prisma.measurementStatus.update({
             where: { id: 1 },
             data: { isActive: true },
